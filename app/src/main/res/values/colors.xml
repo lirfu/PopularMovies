@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#333</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#cc0</color>
+    <color name="lightText">#777</color>
+    <color name="movie_title_back">#009d8e</color>
+    <color name="btn_favourite_back">#7de</color>
+</resources>
