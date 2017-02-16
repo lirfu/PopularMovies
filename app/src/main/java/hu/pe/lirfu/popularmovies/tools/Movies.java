@@ -12,13 +12,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+import hu.pe.lirfu.popularmovies.BuildConfig;
+
 /**
  * Created by lirfu on 05.02.17..
  */
 
 public class Movies {
-    private static final String API_KEY = "YOUR_API_KEY_HERE";
-
     private static final String BASE_URL = "http://api.themoviedb.org/3";
     private static final String POPULAR_ENDPOINT = "movie/popular";
     private static final String TOP_RATED_ENDPOINT = "movie/top_rated";
@@ -88,7 +88,7 @@ public class Movies {
     private static String getContentFrom(String endpoint) throws IOException {
         Uri uri = Uri.parse(BASE_URL).buildUpon()
                 .appendEncodedPath(endpoint)
-                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter("api_key", BuildConfig.TMDB_API_KEY)
                 .build();
 
         URL url = new URL(uri.toString());

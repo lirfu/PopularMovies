@@ -1,5 +1,6 @@
 package hu.pe.lirfu.popularmovies;
 
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,14 @@ public class MainActivity extends AppCompatActivity {
         loadingBar = (ProgressBar) findViewById(R.id.pb_fetching_progress);
         moviesFeed = (RecyclerView) findViewById(R.id.rv_movies);
 
-        GridLayoutManager manager = new GridLayoutManager(this, 2);
+        GridLayoutManager manager;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            manager = new GridLayoutManager(this, 2);
+        } else {
+            manager = new GridLayoutManager(this, 4);
+        }
+
         moviesFeed.setLayoutManager(manager);
 
         moviesFeed.setHasFixedSize(true);

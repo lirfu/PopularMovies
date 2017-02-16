@@ -1,5 +1,6 @@
 package hu.pe.lirfu.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -43,8 +45,12 @@ public class MovieInfoActivity extends AppCompatActivity {
         poster = (ImageView) findViewById(R.id.iv_movie_poster);
         progress = (ProgressBar) findViewById(R.id.pb_fetching_progress);
 
-        final String id = getIntent().getStringExtra("movie_id");
-        new FetchMovieTask().execute(id);
+        Intent intent = getIntent();
+        if(intent.hasExtra(MOVIE_ID_TAG)){
+        String id = intent.getStringExtra(MOVIE_ID_TAG);
+        new FetchMovieTask().execute(id);}
+        else
+            Toast.makeText(this, R.string.intent_tag_missing, Toast.LENGTH_LONG).show();
     }
 
     private class FetchMovieTask extends AsyncTask<String, Void, String> {
