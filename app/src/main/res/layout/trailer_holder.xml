@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:adjustViewBounds="true"
+    android:background="@color/simple_background"
+    android:padding="7dp"
+    android:layout_marginBottom="7dp">
+
+    <Button
+        android:id="@+id/btn_trailer_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_media_play"/>
+
+    <TextView
+        android:id="@+id/tv_trailer_title"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+</LinearLayout>

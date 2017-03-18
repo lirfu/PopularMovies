@@ -1,6 +1,7 @@
 package hu.pe.lirfu.popularmovies.tools;
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,8 @@ public class Movies {
     private static final String BASE_URL = "http://api.themoviedb.org/3";
     private static final String POPULAR_ENDPOINT = "movie/popular";
     private static final String TOP_RATED_ENDPOINT = "movie/top_rated";
+    private static final String TRAILERS_ENDPOINT = "/videos";
+    private static final String REVIEWS_ENDPOINT = "/reviews";
     private static final String ID_ENDPOINT = "movie/";
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
@@ -31,7 +34,16 @@ public class Movies {
      * Returns the fetched movie JSON string based on the movie id.
      */
     public static String getById(String id) throws IOException {
+        Log.d("lirfu", "Requested movie id: "+id);
         return getContentFrom(ID_ENDPOINT + id);
+    }
+
+    public static String getTrailersFor(String id) throws IOException {
+        return getContentFrom(ID_ENDPOINT + id+TRAILERS_ENDPOINT);
+    }
+    // TODO test getReviewsFrom
+    public static String getReviewsFrom(String id) throws IOException {
+        return getContentFrom(ID_ENDPOINT + id+REVIEWS_ENDPOINT);
     }
 
     /**
@@ -68,6 +80,27 @@ public class Movies {
         return new Movie(fetchedObject);
     }
 
+    public static Trailer[] parseTrailersFromString(String content) throws JSONException {
+        JSONArray trailersJSONArray = new JSONObject(content).optJSONArray("results");
+        Trailer[] trailers = new Trailer[trailersJSONArray.length()];
+
+        for (int i = 0; i < trailersJSONArray.length(); i++)
+            trailers[i] = new Trailer(trailersJSONArray.getJSONObject(i));
+
+        return trailers;
+    }
+    // TODO test parseReviewsFromString
+    public static Review[] parseReviewsFromString(String content) throws JSONException {
+        JSONArray reviewsJSONArray = new JSONObject(content).optJSONArray("results");
+
+        Review[] reviews = new Review[reviewsJSONArray.length()];
+
+        for (int i = 0; i < reviewsJSONArray.length(); i++)
+            reviews[i] = new Review(reviewsJSONArray.getJSONObject(i));
+
+        return reviews;
+    }
+
     /**
      * Turn the JSON string of multiple movies into the simple movie objects.
      */
@@ -76,6 +109,7 @@ public class Movies {
         JSONArray moviesJSONArray = new JSONObject(content).optJSONArray("results");
 
         MovieSimple[] movies = new MovieSimple[moviesJSONArray.length()];
+
         for (int i = 0; i < moviesJSONArray.length(); i++)
             movies[i] = new MovieSimple(moviesJSONArray.getJSONObject(i));
 

@@ -6,4 +6,6 @@
     <string name="error_no_internet_connection">Can\'t fetch data. Check your internet connection.</string>
     <string name="error_JSON_parsing">Error parsing data. Please check for updates.</string>
     <string name="intent_tag_missing">Oops! Couldn\'t load, intent tag missing.</string>
+    <string name="trailers">Trailers:</string>
+    <string name="reviews">Reviews:</string>
 </resources>
