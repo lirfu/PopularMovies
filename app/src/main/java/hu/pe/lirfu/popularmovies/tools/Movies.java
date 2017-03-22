@@ -89,7 +89,6 @@ public class Movies {
 
         return trailers;
     }
-    // TODO test parseReviewsFromString
     public static Review[] parseReviewsFromString(String content) throws JSONException {
         JSONArray reviewsJSONArray = new JSONObject(content).optJSONArray("results");
 

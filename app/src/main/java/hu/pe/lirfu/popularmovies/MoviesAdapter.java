@@ -1,5 +1,6 @@
 package hu.pe.lirfu.popularmovies;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieHolde
     public MoviesAdapter(Context context, MovieSimple[] movies) {
         this.context = context;
         this.movies = movies;
+//        Log.d("lirfu", "MoviesAdapter: "+movies.length);
     }
 
     @Override
@@ -69,6 +71,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieHolde
             i.putExtra(MovieInfoActivity.MOVIE_ID_TAG, this.id);
 
             context.startActivity(i);
+            ((Activity)context).finish();
         }
     }
 }

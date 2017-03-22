@@ -94,6 +94,7 @@
                     tools:title="6.7/10" />
 
                 <Button
+                    android:id="@+id/btn_add_to_favourites"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -152,7 +153,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_reviews"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:padding="7dp" />
 

@@ -1,12 +1,16 @@
 package hu.pe.lirfu.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +22,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
+import hu.pe.lirfu.popularmovies.db.FavouriteMovieContract;
 import hu.pe.lirfu.popularmovies.tools.Movie;
 import hu.pe.lirfu.popularmovies.tools.Movies;
 import hu.pe.lirfu.popularmovies.tools.Review;
@@ -33,7 +38,10 @@ public class MovieInfoActivity extends AppCompatActivity {
     TextView title, releaseDate, runtime, rating, overview, error;
     ImageView poster;
     ProgressBar progress;
+    Button favourites;
     RecyclerView rv_trailers, rv_reviews;
+
+    private final int DATA_INDEX = 0, TRAILERS_INDEX = 1, REVIEWS_INDEX = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,7 @@ public class MovieInfoActivity extends AppCompatActivity {
 
         poster = (ImageView) findViewById(R.id.iv_movie_poster);
         progress = (ProgressBar) findViewById(R.id.pb_fetching_progress);
+        favourites = (Button) findViewById(R.id.btn_add_to_favourites);
         rv_trailers = (RecyclerView) findViewById(R.id.rv_trailers);
         rv_reviews = (RecyclerView) findViewById(R.id.rv_reviews);
 
@@ -66,8 +75,20 @@ public class MovieInfoActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.intent_tag_missing, Toast.LENGTH_LONG).show();
     }
 
+    private int favBtnColor(boolean fav) {
+        int id = fav ? R.color.btn_favourite_selected_back : R.color.btn_favourite_back;
+        return getColor(id);
+    }
+
+    private Cursor getFromDatabase(String id) {
+        Uri uri = FavouriteMovieContract.FavouriteMovieEntry.CONTENT_URI;
+//        uri = uri.buildUpon().appendPath(id).build();
+        Cursor query = getContentResolver().query(uri, null, FavouriteMovieContract.FavouriteMovieEntry._ID+"=?", new String[]{id}, null);
+
+        return query;
+    }
+
     private class FetchMovieTask extends AsyncTask<String, Void, String[]> {
-private int DATA_INDEX=0, TRAILERS_INDEX=1, REVIEWS_INDEX=2;
 
         @Override
         protected void onPreExecute() {
@@ -95,13 +116,49 @@ private int DATA_INDEX=0, TRAILERS_INDEX=1, REVIEWS_INDEX=2;
             }
 
             try {
-                Movie movie = Movies.parseMovieFromString(results[DATA_INDEX]);
+                final Movie movie = Movies.parseMovieFromString(results[DATA_INDEX]);
 
                 title.setText(movie.getOriginalTitle());
                 releaseDate.setText(movie.getReleaseYear());
                 runtime.setText(movie.getFormattedRuntime());
                 rating.setText(movie.getFormattedVoteAverage());
                 overview.setText(movie.getOverview());
+
+                Cursor query = getFromDatabase(movie.getId());
+                final boolean isFavourite = query.getCount() != 0;
+                query.close();
+
+                favourites.setBackgroundColor(favBtnColor(isFavourite));
+                if (isFavourite)
+                    favourites.setText(R.string.btn_favorite_selected);
+                else
+                    favourites.setText(R.string.btn_favorite);
+
+                favourites.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (isFavourite) {
+                            Uri uri = FavouriteMovieContract.FavouriteMovieEntry.CONTENT_URI;
+                            uri = uri.buildUpon().appendPath(movie.getId()).build();
+                            getContentResolver().delete(uri, null, null);
+
+                            Toast.makeText(MovieInfoActivity.this, "Removed " + movie.getOriginalTitle() + " from favourites!", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(FavouriteMovieContract.FavouriteMovieEntry._ID, movie.getId());
+                            contentValues.put(FavouriteMovieContract.FavouriteMovieEntry.COLUMN_TITLE, movie.getOriginalTitle());
+                            getContentResolver().insert(FavouriteMovieContract.FavouriteMovieEntry.CONTENT_URI, contentValues);
+
+                            Toast.makeText(MovieInfoActivity.this, "Added " + movie.getOriginalTitle() + " to favourites!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        Intent i = new Intent(MovieInfoActivity.this, MainActivity.class);
+                        i.putExtra(MainActivity.SORTING_EXTRA_TAG, MainActivity.Sorting.FAVOURITES.toString());
+                        startActivity(i);
+                        finish();
+                    }
+                });
 
                 Picasso.with(MovieInfoActivity.this).load(movie.getPosterUrl()).into(poster);
 
@@ -112,10 +169,18 @@ private int DATA_INDEX=0, TRAILERS_INDEX=1, REVIEWS_INDEX=2;
                 Review[] reviews = Movies.parseReviewsFromString(results[REVIEWS_INDEX]);
                 ReviewsAdapter r_ad = new ReviewsAdapter(MovieInfoActivity.this, reviews);
                 rv_reviews.setAdapter(r_ad);
+
             } catch (JSONException e) {
                 error.setVisibility(View.VISIBLE);
                 error.setText(R.string.error_JSON_parsing);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(MovieInfoActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
     }
 }

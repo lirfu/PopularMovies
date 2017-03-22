@@ -6,5 +6,6 @@
     <color name="lightText">#777</color>
     <color name="movie_title_back">#009d8e</color>
     <color name="btn_favourite_back">#7de</color>
+    <color name="btn_favourite_selected_back">#fd0</color>
     <color name="simple_background">#e0f6f3</color>
 </resources>
