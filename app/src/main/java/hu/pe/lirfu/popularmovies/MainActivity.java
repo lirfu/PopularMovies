@@ -204,7 +204,30 @@ public class MainActivity extends AppCompatActivity {
             if (sorting != null) {
                 sortedBy = Sorting.valueOf(sorting);
             }
+            i.removeExtra(SORTING_EXTRA_TAG);
         }
         Log.d("lirfu", "onResume: " + sortedBy);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(SORTING_EXTRA_TAG, sortedBy.toString());
+        Log.d("lirfu", "onSaveInstanceState: "+sortedBy);
+    }
+
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Log.d("lirfu", "onRestoreInstanceState: "+savedInstanceState.containsKey(SORTING_EXTRA_TAG));
+        if (savedInstanceState.containsKey(SORTING_EXTRA_TAG)) {
+            sortedBy = Sorting.valueOf(savedInstanceState.getString(SORTING_EXTRA_TAG));
+            Log.d("lirfu", "" + sortedBy);
+        }
+
     }
 }
