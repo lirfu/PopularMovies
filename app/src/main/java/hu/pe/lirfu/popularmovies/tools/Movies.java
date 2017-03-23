@@ -41,7 +41,6 @@ public class Movies {
     public static String getTrailersFor(String id) throws IOException {
         return getContentFrom(ID_ENDPOINT + id+TRAILERS_ENDPOINT);
     }
-    // TODO test getReviewsFrom
     public static String getReviewsFrom(String id) throws IOException {
         return getContentFrom(ID_ENDPOINT + id+REVIEWS_ENDPOINT);
     }

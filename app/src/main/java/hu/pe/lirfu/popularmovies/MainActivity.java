@@ -84,7 +84,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        onOptionsItemSelected(item);
+        int selectedIndex;
+        switch (sortedBy) {
+            case POPULARITY:
+                selectedIndex = 0;
+                break;
+            case TOP_RATED:
+                selectedIndex = 1;
+                break;
+            case FAVOURITES:
+                selectedIndex = 2;
+                break;
+            default:
+                selectedIndex = 0;
+        }
+        spinner.setSelection(selectedIndex);
+
         return true;
     }
 
@@ -104,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             new FetchMoviesTask().execute();
-
         }
 
         return true;
@@ -166,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 errorView.setVisibility(View.VISIBLE);
                 errorView.setText(R.string.error_no_internet_connection);
                 return;
-            }
-            else if(result.length==0 && sortedBy.equals(Sorting.FAVOURITES)){
+            } else if (result.length == 0 && sortedBy.equals(Sorting.FAVOURITES)) {
                 errorView.setVisibility(View.VISIBLE);
                 errorView.setText("You have no favourite movies.");
             }
@@ -177,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    static enum Sorting {
+    enum Sorting {
         POPULARITY, TOP_RATED, FAVOURITES
     }
 
@@ -192,6 +205,6 @@ public class MainActivity extends AppCompatActivity {
                 sortedBy = Sorting.valueOf(sorting);
             }
         }
-        Log.d("lirfu", "onResume: "+sortedBy);
+        Log.d("lirfu", "onResume: " + sortedBy);
     }
 }

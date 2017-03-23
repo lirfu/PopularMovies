@@ -82,7 +82,6 @@ public class MovieInfoActivity extends AppCompatActivity {
 
     private Cursor getFromDatabase(String id) {
         Uri uri = FavouriteMovieContract.FavouriteMovieEntry.CONTENT_URI;
-//        uri = uri.buildUpon().appendPath(id).build();
         Cursor query = getContentResolver().query(uri, null, FavouriteMovieContract.FavouriteMovieEntry._ID+"=?", new String[]{id}, null);
 
         return query;
